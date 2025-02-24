@@ -51,27 +51,55 @@ jobs:
             IdentityFile ~/.ssh/toby-instance-key.pem" >> ~/.ssh/config
           chmod 600 ~/.ssh/config
 
-      - name: Set SSH key
-        run: |
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/toby-instance-key.pem
-          chmod 600 ~/.ssh/toby-instance-key.pem
-
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: '10.0.133.177''  # 프라이빗 인스턴스 IP
+          host: '10.0.133.177'
           username: ec2-user
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          proxy_host: '13.124.67.16'  # bastion 호스트 IP
+          proxy_host: '13.124.67.16'
           proxy_username: ec2-user
           proxy_key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
             # EC2 인스턴스에서 ECR 로그인
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
-            # 새 이미지 pull
-            docker pull ${{ steps.login-ecr.outputs.registry }}/trinity-repo:${{ github.sha }}
-            # 기존 컨테이너 중지 및 제거 (없으면 에러 무시)
-            docker stop trinity-container || true
-            docker rm trinity-container || true
-            # 새 컨테이너 실행 (필요 시 추가 옵션 조정)
-            docker run -d --name trinity-container -p 8080:8080 ${{ steps.login-ecr.outputs.registry }}/trinity-repo:${{ github.sha }}
+            
+            # 작업 디렉토리로 이동
+            cd /home/ec2-user/trinity-be
+            
+            # 환경 변수 파일 생성
+            echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}
+            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+            MYSQL_USER=admin
+            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
+            SPRING_PROFILES_ACTIVE=prod" > ctc.env
+            
+            # docker-compose.yml 업데이트
+            echo "services:
+              app:
+                image: ${{ steps.login-ecr.outputs.registry }}/trinity-repo:${{ github.sha }}
+                container_name: catch-ping-app
+                ports:
+                  - \"8080:8080\"
+                environment:
+                  SPRING_PROFILES_ACTIVE: prod
+                  SPRING_DATASOURCE_URL: jdbc:mysql://${{ secrets.MYSQL_HOST }}:3306/${{ secrets.MYSQL_DATABASE }}
+                  SPRING_DATASOURCE_USERNAME: admin
+                  SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+                env_file:
+                  - ctc.env
+                networks:
+                  - ctc-network
+            
+            networks:
+              ctc-network:
+                driver: bridge" > docker-compose.yml
+            
+            # 컨테이너 중지 및 삭제
+            docker-compose down || true
+            
+            # 새 컨테이너 시작
+            docker-compose up -d
+            
+            # 사용하지 않는 이미지 정리
+            docker image prune -f

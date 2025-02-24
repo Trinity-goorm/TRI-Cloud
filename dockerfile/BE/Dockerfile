@@ -1,2 +1,9 @@
-# 베이스 이미지 선택 (Python 3.12-slim)
-FROM python:3.12-slim
+# 1. Base image
+FROM openjdk:17-jdk-slim
+
+# 2. Add JAR file
+ARG JAR_FILE=build/libs/ctc.jar
+COPY ${JAR_FILE} app.jar
+
+# 4. Run the application
+ENTRYPOINT ["java", "-jar", "/app.jar"]
