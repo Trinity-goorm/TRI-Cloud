@@ -67,12 +67,21 @@ jobs:
             # 작업 디렉토리로 이동
             cd /home/ec2-user/trinity-be
             
-            # 환경 변수 파일 생성
-            echo "MYSQL_HOST=${{ secrets.MYSQL_HOST }}
-            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
-            MYSQL_USER=admin
-            MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-            SPRING_PROFILES_ACTIVE=prod" > ctc.env
+            # .env 파일 생성
+            echo "
+
+            # Database
+            PROD_DATASOURCE_URL=jdbc:mysql://${{ secrets.RDS_ENDPOINT }}:3306/${{ secrets.RDS_DATABASE }}
+            PROD_DATASOURCE_USERNAME=${{ secrets.RDS_USERNAME }}
+            PROD_DATASOURCE_PASSWORD=${{ secrets.RDS_PASSWORD }}
+            
+            # Spring
+            SPRING_PROFILES_ACTIVE=prod
+            
+            # Kakao
+            KAKAO_API_KEY=\"${{ secrets.KAKAO_API_KEY }}\"
+            KAKAO_REDIRECT_URI=\"${{ secrets.KAKAO_REDIRECT_URI }}\"
+            " > .env
             
             # docker-compose.yml 업데이트
             echo "services:
@@ -80,17 +89,14 @@ jobs:
                 image: ${{ steps.login-ecr.outputs.registry }}/trinity-repo:${{ github.sha }}
                 container_name: catch-ping-app
                 ports:
-                  - \"8080:8080\"
+                  - "8080:8080"
                 environment:
                   SPRING_PROFILES_ACTIVE: prod
-                  SPRING_DATASOURCE_URL: jdbc:mysql://${{ secrets.MYSQL_HOST }}:3306/${{ secrets.MYSQL_DATABASE }}
-                  SPRING_DATASOURCE_USERNAME: admin
-                  SPRING_DATASOURCE_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
                 env_file:
-                  - ctc.env
+                  - .env
                 networks:
                   - ctc-network
-            
+                    
             networks:
               ctc-network:
                 driver: bridge" > docker-compose.yml
