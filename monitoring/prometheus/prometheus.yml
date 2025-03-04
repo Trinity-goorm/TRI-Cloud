@@ -1,0 +1,43 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # 나중에 AlertManager 설치 시 추가
+
+rule_files:
+  # 나중에 알림 규칙 추가 시 사용
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          instance: 'monitoring-server'
+
+  - job_name: 'frontend'
+    static_configs:
+      - targets: ['10.0.15.154:9100']
+        labels:
+          instance: 'frontend'
+
+  - job_name: 'backend'
+    static_configs:
+      - targets: ['10.0.133.177:9100']
+        labels:
+          instance: 'backend'
+
+  - job_name: 'ml-server'
+    static_configs:
+      - targets: ['10.0.172.33:9100']
+        labels:
+          instance: 'ml-server'
