@@ -92,7 +92,10 @@ jobs:
             
             # Kakao
             KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}
-            KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" > .env
+            KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}
+            
+            # JWT
+            JWT_SECRET=${{ secrets.JWT_SECRET }}" > .env
             
             # docker-compose.yml 업데이트
             echo "services:
