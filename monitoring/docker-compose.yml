@@ -57,6 +57,19 @@ services:
     networks:
       - monitoring
 
+  cloudwatch-exporter:
+    image: prom/cloudwatch-exporter
+    container_name: cloudwatch-exporter
+    restart: unless-stopped
+    volumes:
+      - ~/cloudwatch_exporter/config.yml:/config/config.yml
+    command:
+      - '/config/config.yml'
+    ports:
+      - "9106:9106"
+    networks:
+      - monitoring
+
 networks:
   monitoring:
     driver: bridge

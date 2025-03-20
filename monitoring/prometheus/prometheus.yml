@@ -41,3 +41,10 @@ scrape_configs:
       - targets: ['10.0.172.33:9100']
         labels:
           instance: 'ml-server'
+
+  - job_name: 'cloudwatch'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['cloudwatch-exporter:9106']
+        labels:
+          instance: 'rds-metrics'
