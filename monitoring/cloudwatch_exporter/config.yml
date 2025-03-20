@@ -1,7 +1,5 @@
 region: ap-northeast-2  # 귀하의 AWS 리전에 맞게 변경하세요
 
-region: ap-northeast-2  # 귀하의 AWS 리전에 맞게 변경하세요
-
 metrics:
   - aws_namespace: AWS/RDS
     aws_metric_name: CPUUtilization
