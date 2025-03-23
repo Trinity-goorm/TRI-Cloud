@@ -2,25 +2,20 @@ version: '3.8'
 services:
   mongodb_sync:
     build: .
+    network_mode: host
     volumes:
       - ./logs:/app/logs
     environment:
-      - RDS_HOST=trinity-db.cbke280aq027.ap-northeast-2.rds.amazonaws.com
-      - RDS_USER=ec2-user
+      - RDS_HOST=trinity-db.cbke280aq027.ap-northeast-2.rds.amazonaws.com  # IP 대신 엔드포인트 사용
+      - RDS_USER=admin
       - RDS_PASSWORD=profect1234*
-      - RDS_DATABASE=trinity-db
+      - RDS_DATABASE=trinity_db
       - RDS_PORT=3306
-      - MONGO_HOST=localhost
+      - MONGO_HOST=127.0.0.1
       - MONGO_PORT=27017
-      - MONGO_USER=ai_user
+      - MONGO_USER=ai_app
       - MONGO_PASSWORD=profect1234*
-      - MONGO_DATABASE=ai_db
+      - MONGO_DATABASE=ai_database
       - MONGO_COLLECTION=recsys_data
       - SYNC_INTERVAL_MINUTES=60
     restart: always
-    networks:
-      - sync_network
-
-networks:
-  sync_network:
-    driver: bridge

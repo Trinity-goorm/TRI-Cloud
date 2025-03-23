@@ -11,13 +11,12 @@ RDS_CONFIG = {
 
 # MongoDB 설정
 MONGO_CONFIG = {
-    'host': os.getenv('MONGO_HOST', 'localhost'),
+    'host': os.getenv('MONGO_HOST', '10.0.193.101'),
     'port': int(os.getenv('MONGO_PORT', 27017)),
-    'user': os.getenv('MONGO_USER', 'ai_user'),
+    'user': os.getenv('MONGO_USER', 'ai_app'),
     'password': os.getenv('MONGO_PASSWORD', 'profect1234*'),
-    'database': os.getenv('MONGO_DATABASE', 'ai_db'),
+    'database': os.getenv('MONGO_DATABASE', 'ai_database'),
     'collection': os.getenv('MONGO_COLLECTION', 'recsys_data')
 }
 
-# 동기화 설정
 SYNC_INTERVAL_MINUTES = int(os.getenv('SYNC_INTERVAL_MINUTES', 60))
