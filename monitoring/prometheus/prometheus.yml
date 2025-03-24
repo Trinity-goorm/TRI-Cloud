@@ -48,3 +48,15 @@ scrape_configs:
       - targets: ['cloudwatch-exporter:9106']
         labels:
           instance: 'rds-metrics'
+          
+  - job_name: 'mongodb_node'
+    static_configs:
+      - targets: ['10.0.193.101:9100']
+        labels:
+          instance: 'mongodb-server'
+
+  - job_name: 'mongodb_db'
+    static_configs:
+      - targets: ['10.0.193.101:9216']
+        labels:
+          instance: 'mongodb-database'
