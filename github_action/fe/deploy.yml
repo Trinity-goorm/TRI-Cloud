@@ -39,6 +39,8 @@ jobs:
          VITE_VAPID_KEY: ${{ secrets.VITE_VAPID_KEY }}
          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
          VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
+         VITE_REST_KEY: ${{ secrets.VITE_REST_KEY }}
+         VITE_JS_KEY: ${{ secrets.VITE_JS_KEY }}
        run: |
          docker build \
            --build-arg VITE_APP_API_KEY="${VITE_APP_API_KEY}" \
@@ -51,6 +53,8 @@ jobs:
            --build-arg VITE_VAPID_KEY="${VITE_VAPID_KEY}" \
            --build-arg VITE_BASE_URL="${VITE_BASE_URL}" \
            --build-arg VITE_REDIRECT_URI="${VITE_REDIRECT_URI}" \
+           --build-arg VITE_REST_KEY="${VITE_REST_KEY}" \
+           --build-arg VITE_JS_KEY="${VITE_JS_KEY}" \
            -t $ECR_REPOSITORY:$IMAGE_TAG .
          docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -88,6 +92,8 @@ jobs:
          VITE_VAPID_KEY: ${{ secrets.VITE_VAPID_KEY }}
          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
          VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
+         VITE_REST_KEY: ${{ secrets.VITE_REST_KEY }}
+         VITE_JS_KEY: ${{ secrets.VITE_JS_KEY }}
        with:
          host: '10.0.15.154'
          username: ec2-user
@@ -110,6 +116,8 @@ jobs:
            VITE_VAPID_KEY="${VITE_VAPID_KEY}"
            VITE_BASE_URL="${VITE_BASE_URL}"
            VITE_REDIRECT_URI="${VITE_REDIRECT_URI}"
+           VITE_REST_KEY="${VITE_REST_KEY}"
+           VITE_JS_KEY="${VITE_JS_KEY}"
            EOF
 
            # 파일 권한 설정
