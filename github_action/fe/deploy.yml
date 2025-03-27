@@ -105,6 +105,7 @@ jobs:
          script: |
            # .env 파일 생성 및 디렉토리 생성
            mkdir -p /home/ec2-user/TRI-FE
+           
            cat > /home/ec2-user/TRI-FE/.env << EOF
            VITE_APP_API_KEY="${VITE_APP_API_KEY}"
            VITE_API_KEY="${VITE_API_KEY}"
