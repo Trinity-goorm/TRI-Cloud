@@ -33,7 +33,7 @@ SELECT
     empty_ticket_count,
     normal_ticket_count
 FROM user
-WHERE status = 'ACTIVE' AND is_deleted = 0
+WHERE status = 'AVAILABLE' AND is_deleted = false
 """
 
 # 사용자 가격 범위 선호도 쿼리 (테이블명 수정, deleted_at 조건 제거)
