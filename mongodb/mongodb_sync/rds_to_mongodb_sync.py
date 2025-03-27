@@ -8,6 +8,7 @@ import logging
 import os
 import numpy as np
 from dotenv import load_dotenv
+from bson import ObjectId
 import sys
 from config import RDS_CONFIG, MONGO_CONFIG, SYNC_INTERVAL_MINUTES
 from queries import *  # 쿼리 파일 임포트
@@ -42,6 +43,8 @@ def convert_numpy_types(data):
         return float(data)
     elif isinstance(data, np.ndarray):  # NumPy 배열
         return convert_numpy_types(data.tolist())
+    elif isinstance(data, ObjectId):  # MongoDB ObjectId
+        return str(data)
     else:
         return data
 
