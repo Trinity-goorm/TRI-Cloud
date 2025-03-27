@@ -105,7 +105,7 @@ jobs:
          script: |
            # .env 파일 생성 및 디렉토리 생성
            mkdir -p /home/ec2-user/TRI-FE
-
+           
            cat > /home/ec2-user/TRI-FE/.env << EOF
            VITE_APP_API_KEY="${VITE_APP_API_KEY}"
            VITE_API_KEY="${VITE_API_KEY}"
@@ -136,19 +136,8 @@ jobs:
            # 새 컨테이너 시작
            docker run -d --name trinity-container \
              -p 5173:5173 \
-             -e VITE_APP_API_KEY="${VITE_APP_API_KEY}" \
-             -e VITE_API_KEY="${VITE_API_KEY}" \
-             -e VITE_AUTH_DOMAIN="${VITE_AUTH_DOMAIN}" \
-             -e VITE_PROJECT_ID="${VITE_PROJECT_ID}" \
-             -e VITE_STORAGE_BUCKET="${VITE_STORAGE_BUCKET}" \
-             -e VITE_MESSAGING_SENDID="${VITE_MESSAGING_SENDID}" \
-             -e VITE_APP_ID="${VITE_APP_ID}" \
-             -e VITE_VAPID_KEY="${VITE_VAPID_KEY}" \
-             -e VITE_BASE_URL="${VITE_BASE_URL}" \
-             -e VITE_REDIRECT_URI="${VITE_REDIRECT_URI}" \
-             -e VITE_REST_KEY="${VITE_REST_KEY}" \
-             -e VITE_JS_KEY="${VITE_JS_KEY}" \
              --restart unless-stopped \
+             --env-file /home/ec2-user/TRI-FE/.env \
              ${{ steps.login-ecr.outputs.registry }}/trinity-repo:${{ github.sha }}
            
            # 사용하지 않는 컨테이너 정리
